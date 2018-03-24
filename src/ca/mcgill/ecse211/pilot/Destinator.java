@@ -66,7 +66,7 @@ public class Destinator {
 			nav.turnTo(180, false);
 			nav.travelTo(wifi.Bridge_LL[0] + 0.5,  wifi.Bridge_UR[1] -3, false);
 			
-			nav.travelTo(wifi.Bridge_UR[0] - 1, wifi.Bridge_UR[1] + 1, true);
+			nav.travelTo(wifi.Bridge_LL[0] + 1, wifi.Bridge_LL[1] - 1, true);
 		}
 		else {
 			
@@ -74,7 +74,7 @@ public class Destinator {
 			nav.turnTo(0, false);
 			nav.travelTo(wifi.Bridge_LL[0] + 0.5,  wifi.Bridge_LL[1] +3, false);
 			
-			nav.travelTo(wifi.Bridge_LL[0] + 1, wifi.Bridge_LL[1] - 1, true);
+			nav.travelTo(wifi.Bridge_LL[0], wifi.Bridge_UR[1] + 1, true);
 			
 		}
 	}
