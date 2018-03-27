@@ -20,11 +20,13 @@ import lejos.hardware.Sound;
 
 public class LightLocalizer extends Thread  {
 	
-	private EV3LargeRegulatedMotor leftMotor;
-	private EV3LargeRegulatedMotor rightMotor;
+	private static EV3LargeRegulatedMotor leftMotor;
+	private static EV3LargeRegulatedMotor rightMotor;
 	private EV3ColorSensor colorSensorL, colorSensorR;
-	public SampleProvider RColor, LColor;
-	public float[] RData, LData;
+	public static SampleProvider RColor;
+	public static SampleProvider LColor;
+	public static float[] RData;
+	public static float[] LData;
 	private Odometer odometer;
 	private WiFi wifi;
 	
@@ -202,7 +204,7 @@ public class LightLocalizer extends Thread  {
 		rightMotor.rotate(convertDistance(WHEEL_RAD, SENSOR_OFFSET), false);
 	}
 
-	public void squareUp(boolean reverse) {
+	public static void squareUp(boolean reverse) {
 		
 		rightMotor.setSpeed(MOTOR_ROTATE);
 		leftMotor.setSpeed(MOTOR_ROTATE);

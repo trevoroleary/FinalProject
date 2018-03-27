@@ -18,124 +18,60 @@ public class Search {
 	private final int[] LL;
 	private final int[] UR;
 
-	private colorSensor sensor;
 	private Odometer odometer;
 	private Navigation navigator;
 	private Destinator destinator;
 	private USLocalizer USData;
 	private boolean upTrue = true;
 	private boolean isRight = false;
-	private int sampleSize = 25;
 	private float avgData;
+	private EV3LargeRegulatedMotor leftMotor;
+	private EV3LargeRegulatedMotor rightMotor;
+	int turnCounter = 0;
 
 	private float blockInFront = 50;
 	private boolean navigating = false;
 	private boolean foundSomething = false;
 
-	public Search(int[] LL, int[] UR, colorSensor colorSensor, Odometer odometer, USLocalizer USData,
-			Navigation navigator, Destinator destinator, EV3LargeRegulatedMotor sensorMotor) {
+	public Search(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, int[] LL, int[] UR,
+			colorSensor colorSensor, Odometer odometer, USLocalizer USData, Navigation navigator, Destinator destinator,
+			EV3LargeRegulatedMotor sensorMotor) {
+
 		this.sensorMotor = sensorMotor;
+		this.leftMotor = leftMotor;
+		this.rightMotor = rightMotor;
 		this.LL = LL;
 		this.UR = UR;
-		this.sensor = colorSensor;
 		this.odometer = odometer;
 		this.navigator = navigator;
 		this.USData = USData;
 
-		/**
-		 * This method initiates searching should only be called one the robot
-		 * is in the LL of the search area.
-		 * 
-		 */
-
+		leftMotor.setSpeed(Main.MOTOR_STRAIGHT);
+		rightMotor.setSpeed(Main.MOTOR_STRAIGHT);
 	}
 
+	/**
+	 * This method initiates searching should only be called one the robot is in the
+	 * LL of the search area.
+	 * 
+	 */
 	public void beginSearch() {
 
-		while (!foundSomething) {
-			if(colorSensor.targetColor == colorSensor.sensorColor) {
-				//TODO this never becomes true ????? HELP DUDE (even though the robot beeps twice after seeing the right color
+		while (!foundSomething && turnCounter != 4) {
+			if (colorSensor.targetColor == colorSensor.sensorColor) {
 				foundSomething = true;
+				break;
 			} else {
-			goUp();
+				goUp();
 			}
 		}
-		destinator.goToUpperRight(UR);
+		sensorForward();
+		// destinator.goToUpperRight(UR);
 	}
 
 	/**
-	 * This method checks in front and 45deg on either side of the robot for
-	 * blocks
-	 * 
-	 * @return returns an array of size 3. If all elements are 0 there is
-	 *         nothing on either side of the robot or infront if i0 is 1 there
-	 *         is something on the left, if i1 is 1 there is something in front,
-	 *         if i2 is 1 there is something on the right
-	 */
-
-	public void checkSide() {
-		int[] returnVals = new int[] { 0, 0, 0 };
-
-		avgData = USData.deriData();
-		LCD.drawString("US:" + avgData, 0, 6, false);
-
-		if (avgData < 25) {
-			returnVals[1] = 1;
-			// TODO IDENTIFY BLOCK WITH FIND AHEAD
-			// AVOID
-			move(avgData - 5);
-			navigator.turnTo(-90, false);
-			move((Main.TRACK + 10) / 2);
-
-			navigator.turnTo(90, false);
-			move((Main.TRACK + 10) / 2);
-
-			navigator.turnTo(90, false);
-			move((Main.TRACK + 10) / 2);
-
-			navigator.turnTo(-90, false);
-			move((Main.TRACK + 10) / 2);
-		}
-
-		navigator.turn(45,false);
-		avgData = USData.deriData();
-
-		if (avgData < 25) {
-			returnVals[2] = 1;
-
-			move(avgData - 5);
-			moveBack(avgData - 5);
-		}
-
-		else {
-
-			navigator.turn(-90,false);
-			avgData = USData.deriData();
-
-			if (avgData < 25) {
-				returnVals[0] = 1;
-				// TODO IDENTIFY BLOCK WITH FIND AHEAD
-				move(avgData - 5);
-				moveBack(avgData - 5);
-
-			}
-
-			else {
-				if (upTrue) {
-					navigator.turnTo(0, false);
-				} else {
-					navigator.turnTo(180, false);
-				}
-				nextLine();
-
-			}
-		}
-
-	}
-
-	/**
-	 * This method allows the conversion of a distance to the total rotation of
-	 * each wheel need to cover that distance.
+	 * This method allows the conversion of a distance to the total rotation of each
+	 * wheel need to cover that distance.
 	 * 
 	 * @param radius
 	 * @param distance
@@ -146,8 +82,8 @@ public class Search {
 	}
 
 	/**
-	 * This method allows the conversion of an angle to the total rotation of
-	 * each wheel need to cover that distance.
+	 * This method allows the conversion of an angle to the total rotation of each
+	 * wheel need to cover that distance.
 	 * 
 	 * @param radius
 	 * @param distance
@@ -158,74 +94,8 @@ public class Search {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 
-	/**
-	 * This method increments forward one tile length If the robot it at the
-	 * edge of the search area it calls nextSection instead
-	 * 
-	 * TODO while this method is moving forward, object avoidance needs to be
-	 * implemented
-	 */
-	public void nextLine() {
-		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
-		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		int theta = (int) (odometer.nearestHeading() + 0.5);
-
-		if ((y == UR[1] && theta == 0) || (y == LL[1] && theta == 180)) {
-			nextSection();
-		} else {
-			if (upTrue) {
-				navigator.travelTo(x, y + 1, true);
-				navigator.turnTo(0, true);
-				checkSide();
-			} else {
-				navigator.travelTo(x, y - 1, true);
-				navigator.turnTo(180, true);
-				checkSide();
-			}
-		}
-	}
-
-	/**
-	 * this method increments the robots x value so that it can start the next
-	 * state of its searching in the search area This method also orients the
-	 * robot to face inwards so an additional line can be searched
-	 */
-	public void nextSection() {
-		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
-		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		navigator.travelTo(x, y, true);
-		navigator.travelTo(x + 1, y, true);
-		if (y == UR[1]) {
-			upTrue = false;
-			navigator.turnTo(180, true);
-		} else {
-			upTrue = true;
-			navigator.turnTo(0, true);
-		}
-	}
-
-	public void move(double distance) {
-
-
-		Odometer.rightMotor.setSpeed(100);
-		Odometer.leftMotor.setSpeed(100);
-		Odometer.leftMotor.rotate(convertDistance(Main.WHEEL_RAD, distance), true);
-		Odometer.rightMotor.rotate(convertDistance(Main.WHEEL_RAD, distance), false);
-
-	}
-
-	public void moveBack(double distance) {
-		// AVOID
-
-		Odometer.rightMotor.setSpeed(100);
-		Odometer.leftMotor.setSpeed(100);
-		Odometer.leftMotor.rotate(-convertDistance(Main.WHEEL_RAD, distance), true);
-		Odometer.rightMotor.rotate(-convertDistance(Main.WHEEL_RAD, distance), false);
-
-	}
-
 	public void getBlock() {
-		navigator.turn(90,false);
+		navigator.turn(90, false);
 		sensorForward();
 
 		navigating = true;
@@ -247,67 +117,75 @@ public class Search {
 				navigating = false;
 				LCD.drawString("Found" + colorSensor.getResponse(), 0, 6, false);
 				foundSomething = true;
-				
+
 			}
 		}
 
 		navigator.travelToNearestEdge();
-		
 
 	}
 
 	public void sensorRight() {
-		if (!isRight){
-		isRight = true;
-		sensorMotor.rotate(-90);
+		if (!isRight) {
+			isRight = true;
+			sensorMotor.rotate(-90);
 		}
 
 	}
 
 	public void sensorForward() {
-		if(isRight){
-		isRight = false;
-		sensorMotor.rotate(90);
+		if (isRight) {
+			isRight = false;
+			sensorMotor.rotate(90);
 		}
 	}
 
 	public void goUp() {
-		sensorRight();
-		
+
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		
-		double theta = odometer.nearestHeading();
-		
-		navigator.travelTo(x, y, true);
-		navigator.turnTo(theta, true);
 
-		if (y == UR[1] && theta == 0)
-			navigator.turnTo(90, true);
-		else if (x == UR[0] && theta == 90)
-			navigator.turnTo(180, true);
-		else if (y == LL[1] && theta == 180)
-			navigator.turnTo(270, true);
-		else if (x == LL[0] && theta == 270) {
-			destinator.goToUpperRight(UR);
+		sensorRight();
+
+		double theta = odometer.nearestHeading();
+
+		if (turnCounter < 4) {
+			if (y == UR[1] && theta == 0) {
+				navigator.turnTo(90, true);
+				turnCounter++;
+			} else if (x == UR[0] && theta == 90) {
+				navigator.turnTo(180, true);
+				turnCounter++;
+			} else if (y == LL[1] && theta == 180) {
+				navigator.turnTo(270, true);
+				turnCounter++;
+			} else if (x == LL[0] && theta == 270) {
+				navigator.turnTo(0, true);
+				turnCounter++;
+				// destinator.goToUpperRight(UR);
+				// foundSomething = true;
+			}
+		}
+		if (turnCounter == 4) {
 			foundSomething = true;
 		}
+		if (turnCounter != 4) {
+			rightMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE), true);
+			leftMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE), true);
 
-		Odometer.rightMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE), true);
-		Odometer.leftMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE), true);
-		navigating = true;
+			navigating = true;
 
-		while (navigating) {
-			LCD.drawString("US:" + avgData, 0, 6, false);
-			//if (USData.deriData() > blockInFront) {
-			if(USData.getFilteredData() < 30) {
-				Odometer.rightMotor.stop(true);
-				Odometer.leftMotor.stop(true);
-				navigating = false;
-				getBlock();
-				
-			} else if (!Odometer.rightMotor.isMoving() && !Odometer.leftMotor.isMoving()) {
-				navigating = false;
+			while (navigating) {
+
+				if (USData.getFilteredData() < 30) {
+					Odometer.rightMotor.stop(true);
+					Odometer.leftMotor.stop(true);
+					navigating = false;
+					getBlock();
+
+				} else if (!Odometer.rightMotor.isMoving() && !Odometer.leftMotor.isMoving()) {
+					navigating = false;
+				}
 			}
 		}
 	}

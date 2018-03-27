@@ -13,15 +13,15 @@ import lejos.robotics.SampleProvider;
 
 public class Navigation extends Thread {
 
-	private EV3LargeRegulatedMotor leftMotor;
-	private EV3LargeRegulatedMotor rightMotor;
+	static EV3LargeRegulatedMotor leftMotor;
+	static EV3LargeRegulatedMotor rightMotor;
 	private static final int MOTOR_STRAIGHT = Main.MOTOR_STRAIGHT;
 	private static final int MOTOR_ROTATE = Main.MOTOR_ROTATE;
 	public static final double WHEEL_RAD = 2.12;
 	private boolean isNavigating;
-	private Odometer odometer;
+	private static Odometer odometer;
 	public static int pointcounter;
-	public LightLocalizer lightLocalizer;
+	public static LightLocalizer lightLocalizer;
 
 	// angle toward destination
 	private double Theta;
@@ -30,7 +30,7 @@ public class Navigation extends Thread {
 	// current position
 	private double currentX;
 	private double currentY;
-	private double currentTheta;
+	private static double currentTheta;
 
 	// difference between current position and destination position
 	private double dX; //
@@ -110,7 +110,7 @@ public class Navigation extends Thread {
 	 * traveling to next waypoint
 	 * 
 	 */
-	public void turnTo(double theta, boolean localizer) {
+	public static void turnTo(double theta, boolean localizer) {
 		boolean turnleft = false;
 		double currTheta = odometer.getTheta();
 		double angle = theta - currTheta;
@@ -144,7 +144,7 @@ public class Navigation extends Thread {
 			lightLocalizer.correctLocation();
 	}
 
-	public void turn(double theta, boolean correct) {
+	public static void turn(double theta, boolean correct) {
 		leftMotor.setSpeed(MOTOR_ROTATE);
 		rightMotor.setSpeed(MOTOR_ROTATE);
 

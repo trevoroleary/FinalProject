@@ -59,22 +59,21 @@ public class Main {
 	static SensorModes ultrasonicSensor = new EV3UltrasonicSensor(usPort);
 	static SampleProvider usDistance = ultrasonicSensor.getMode("Distance");
 	static float[] usData = new float[usDistance.sampleSize()];
-	
+		
 	
 	private static WiFi wifi = new WiFi();
 	/*
 	 * To get any map info its wifi.startCorner for example or
 	 * wifi.targetColor
 	 */
-	public static int[] LL = new int[] { 2, 2 };
-	public static int[] UR = new int[] { 5, 5 };
+
 
 	public static final double WHEEL_RAD = 2.12;// 2.12
-	public static final double TRACK = 10.2;//
+	public static final double TRACK = 10.45;//
 	public static final double TILE_SIZE = 30.48;
 	public static final int GRID_SIZE = 8;
 	public static final int MOTOR_ROTATE = 105;
-	public static final int MOTOR_STRAIGHT = 185;
+	public static final int MOTOR_STRAIGHT = 185; //185
 
 
 
@@ -86,38 +85,57 @@ public class Main {
 
 	public static void main(String[] args) throws OdometerExceptions {
 
-		int buttonChoice;
+		
+		leftMotor.setAcceleration(3000);
+		rightMotor.setAcceleration(3000);
 		
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 
-		Display odometrydisplay = new Display(lcd); // No need to change
+		//Display odometrydisplay = new Display(lcd); // No need to change
 		// Navigation navigation = new Navigation(odometer,
 		// leftMotor,rightMotor);
 					
 		Thread odoThread = new Thread(odometer);
 		odoThread.start();
 
-		Thread ododisplayThread = new Thread(odometrydisplay);
-		ododisplayThread.start();
+		//Thread ododisplayThread = new Thread(odometrydisplay);
+		//ododisplayThread.start();
 
 		 
-		colorSensor colorSensor = new colorSensor(RGBData, RGBColor, wifi.targetColor);
-		colorSensor.start();
+		
 
 		LightLocalizer lightLocalizer = new LightLocalizer(wifi.startCorner, odometer, leftMotor, rightMotor, RColor, LColor, RData, LData);
-		Navigation navigator = new Navigation(odometer, leftMotor, rightMotor, lightLocalizer, LL, UR);
+		Navigation navigator = new Navigation(odometer, leftMotor, rightMotor, lightLocalizer, wifi.Search_LL, wifi.Search_UR);
 		Destinator destinator = new Destinator(navigator, odometer, wifi);
-		USLocalizer USLocalizer = new USLocalizer(wifi.startCorner ,odometer, leftMotor, rightMotor, usDistance, navigator);
-		Search searcher = new Search(LL, UR, colorSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
-
-		lcd.clear();
+		USLocalizer USLocalizer = new USLocalizer(wifi ,leftMotor, rightMotor, odometer, usDistance, usData );
 		
+		
+		
+
 		USLocalizer.localize();
 		lightLocalizer.localize();
-
+		navigator.turnTo(90, true);
+		destinator.gotoCheckPoint();
 		destinator.gotoCheckPoint();
 		
+		//odometer.setXYT(3, 5, 270);
+		
+		
+		
+		colorSensor colorSensor = new colorSensor(RGBData, RGBColor, wifi.targetColor);
+		colorSensor.start();
+		Search searcher = new Search(leftMotor, rightMotor, wifi.Search_LL, wifi.Search_UR, colorSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
+		
+		//destinator.gotoCheckPoint();
+		
+		searcher.beginSearch();
+		
+		colorSensor.interrupt();
+		
+		destinator.gotoCheckPoint();
+		
+		destinator.gotoCheckPoint();
 		
 		//destinator.gotoLowerLeft(LL, UR);
 
