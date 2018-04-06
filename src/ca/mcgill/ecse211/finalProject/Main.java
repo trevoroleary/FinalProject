@@ -13,7 +13,6 @@ import java.util.TimerTask;
 
 import ca.mcgill.ecse211.color.*;
 import lejos.hardware.Button;
-import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
@@ -33,7 +32,7 @@ public class Main {
 	// Motor Objects, and Robot related parameters
 	
 	
-	static final String SERVER_IP = "192.168.2.3";
+	static final String SERVER_IP = "192.168.2.19";
 	static final int TEAM_NUMBER = 17;
 	
 
@@ -51,7 +50,7 @@ public class Main {
 	private static float[] LData = new float[LColor.sampleSize()];
 
 	private static SensorModes RGBSensor = new EV3ColorSensor(LocalEV3.get().getPort("S4"));
-	private static SampleProvider RGBColor = RGBSensor.getMode("RGB");
+	private static SampleProvider RGBColor = RGBSensor.getMode("ColorID");
 	private static float[] RGBData = new float[RGBColor.sampleSize()];
 
 	private static final TextLCD lcd = LocalEV3.get().getTextLCD();
@@ -79,75 +78,60 @@ public class Main {
 
 	public static void main(String[] args) throws OdometerExceptions {
 
-		
-		leftMotor.setAcceleration(3000);
-		rightMotor.setAcceleration(3000);
-		
-		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
-
-		//Display odometrydisplay = new Display(lcd); // No need to change
-		// Navigation navigation = new Navigation(odometer,
-		// leftMotor,rightMotor);
-					
 		Thread odoThread = new Thread(odometer);
 		odoThread.start();
-
-		//Thread ododisplayThread = new Thread(odometrydisplay);
-		//ododisplayThread.start();
-
-		 
-		
-
 		LightLocalizer lightLocalizer = new LightLocalizer(wifi.startCorner, odometer, leftMotor, rightMotor, RColor, LColor, RData, LData);
 		Navigation navigator = new Navigation(odometer, leftMotor, rightMotor, lightLocalizer, wifi.Search_LL, wifi.Search_UR);
 		Destinator destinator = new Destinator(navigator, odometer, wifi);
 		USLocalizer USLocalizer = new USLocalizer(wifi ,leftMotor, rightMotor, odometer, usDistance, usData );
 		
-		
-		
 
+		leftMotor.setAcceleration(3000);
+		rightMotor.setAcceleration(3000);
+		
+		
+		/*
+		 * 
+		 * --------------------------------PROGRAM BEGINS--------------------------------
+		 * 
+		 */
+
+		
 		USLocalizer.localize();
 		lightLocalizer.localize();
-		//Sound.beep();
-		navigator.turnTo(0, true);
 		
-		/*
+		
+		navigator.turn(90, true);
+		
 		destinator.gotoCheckPoint();
 		destinator.gotoCheckPoint();
-		destinator.gotoCheckPoint();
-		
-		*/
 		
 		
-		//odometer.setXYT(3, 5, 270);
+		
+		//odometer.setXYT(wifi.Search_LL[0]*TILE_SIZE, wifi.Search_LL[1]*TILE_SIZE, 0);
 		
 		
-		/*
 		colorSensor colorSensor = new colorSensor(RGBData, RGBColor, wifi.targetColor);
 		colorSensor.start();
 		Search searcher = new Search(leftMotor, rightMotor, wifi.Search_LL, wifi.Search_UR, colorSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
-		
-		
-		
-		
-		//destinator.gotoCheckPoint();
-		
 		searcher.beginSearch();
-		
-		colorSensor.interrupt();
-		
-		destinator.gotoCheckPoint();
+		//colorSensor.interrupt();
 		
 		destinator.gotoCheckPoint();
+		destinator.gotoCheckPoint();
 		
-		//destinator.gotoLowerLeft(LL, UR);
-
-		//searcher.beginSearch();
-
-
-		*/
 		
+//		IDSensor IDSensor = new IDSensor(RGBData, RGBColor, wifi.targetColor);
+//		IDSensor.start();
+//		
+//		Search searcher = new Search(leftMotor, rightMotor, wifi.Search_LL, wifi.Search_UR, IDSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
+//		searcher.beginSearch();
+		
+		
+		
+		//colorSensor.interrupt();
+
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
 

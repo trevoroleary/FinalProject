@@ -1,12 +1,3 @@
-/**
- * This is an object created by Main
- * It has an important method used immediately after the USLocalizer that corrects the bots x and y values
- * This object also possesses other important correction methods that are to be used during operation
- * 
- * @author Trevor O
- * @Version 2.0
- * @Since 2018-02-12
- */
 package ca.mcgill.ecse211.pilot;
 
 import ca.mcgill.ecse211.finalProject.Main;
@@ -25,6 +16,7 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
+import lejos.hardware.Sound;
 
 public class LightLocalizer extends Thread  {
 	
@@ -69,15 +61,6 @@ public class LightLocalizer extends Thread  {
 
 			
 	//constructor
-	/**
-	 * Class constructor
-	 * 
-	 * @param startCorner for localization to correct the odometer properly
-	 * @param odo so this method has access to the odometer values
-	 * @param leftMotor so this method can access the left motor and send it commands
-	 * @param rightMotor 
-	 */
-	
 	public LightLocalizer(int startCorner, Odometer odo,EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, SampleProvider RColor, SampleProvider LColor, float[] RData, float[] LData ) {
 		
 		this.RColor = RColor;
@@ -100,25 +83,12 @@ public class LightLocalizer extends Thread  {
 		
 	}
 	
-	/**
-	 * This method simplifies the correction process
-	 * Call this method after the US localizer and the robot (given the proper startcorner on construction) will localize its self to the nearest corner
-	 * 
-	 * @author Trevor O
-	 */
 	public void localize() {
 		correctXY();
 		setXTOffset();
 	}
 	
-	/**
-	 * This method is only used privately by correction methods
-	 * depending on the start corner this updates one coordinate of odometer values once the bot is in the right position
-	 * The coordinates updated depend on the starting corner
-	 * 
-	 * @author Trevor O
-	 */
-	private void setYOffset() {
+	public void setYOffset() {
 		if(startCorner == 0) 
 			odometer.setY((1*Main.TILE_SIZE) - SENSOR_OFFSET);
 		else if(startCorner == 1) 
@@ -129,11 +99,6 @@ public class LightLocalizer extends Thread  {
 			odometer.setX((1*Main.TILE_SIZE) - SENSOR_OFFSET);
 	}
 	
-	/**
-	 * This method is used locally to correct one coordinate of the odometer after a correction made by other methods
-	 * 
-	 * @author Trevor O
-	 */
 	public void setXTOffset() {
 		if(startCorner == 0) {
 			odometer.setX((1*Main.TILE_SIZE) - SENSOR_OFFSET);
@@ -163,7 +128,8 @@ public class LightLocalizer extends Thread  {
 	 * it then calls correctX to square up with the line 90 degrees to the right
 	 * 
 	 * this method should only be called when the robot is facing clockwise in one of the corners
-	 * @author Trevor O & Winnie N
+	 * 
+	 * @param startCorner allows this method to correctly set the coordinates in the odometer
 	 */
 	public void correctXY() {
 				
@@ -182,9 +148,10 @@ public class LightLocalizer extends Thread  {
 	
 	/**
 	 * this method is called by correctXY, it squares up with the line that is 90degress to the robots right
-	 * @author Trevor O & Winnie N
+	 * 
+	 * @param startCorner allows the robot to correct the odometer coordinates for each corner
 	 */
-	public void correctX() {
+	private void correctX() {
 
 		setYOffset();
 		
@@ -206,13 +173,6 @@ public class LightLocalizer extends Thread  {
 	  
 	}
 	
-	
-	/**
-	 * This method is very powerful, it can correct the location of the robot at any coordinate on the board
-	 * As long as the robot is within some margin of error this method will correct to the nearest coordinate
-	 * 
-	 * @author Trevor O & Ahmed H
-	 */
 	public void correctLocation() {
 		turnTo(odometer.nearestHeading());
 		double heading = odometer.nearestHeading();
@@ -244,13 +204,6 @@ public class LightLocalizer extends Thread  {
 		rightMotor.rotate(convertDistance(WHEEL_RAD, SENSOR_OFFSET), false);
 	}
 
-	
-	/**
-	 * Square up uses the color sensors to square up with the line either infront or behind it
-	 * this corrects one coordinate as well as the heading angle
-	 * @param reverse a boolean that specifies if the bot should correct with the line infront or behind it
-	 * @author Trevor O & Ahmed H
-	 */
 	public static void squareUp(boolean reverse) {
 		
 		rightMotor.setSpeed(MOTOR_ROTATE);
@@ -280,12 +233,7 @@ public class LightLocalizer extends Thread  {
 		  }
 	}
 	
-	/**
-	 * This method will travel the shortest distance to the location you specify
-	 * @param x is the final desired x position
-	 * @param y is the final desired y position
-	 * @author Trevor O & Winnie N
-	 */
+	//travel to the destination 
 	public void travelTo(double x, double y){
 		
 		x = x * Main.TILE_SIZE;
@@ -314,11 +262,7 @@ public class LightLocalizer extends Thread  {
 		
 		}
 	
-	/**
-	 * This method is used privately. It will turn the robot to a desired heading 
-	 * @param Theta a double that denotes the desired heading direction
-	 * @author Trevor O & Winnie N
-	 */
+	//turn at desired angle
 	public void turnTo(double Theta) { 
 		currentTheta = odometer.getTheta();		//currentTheta is in degree
 		dTheta = Theta - currentTheta;
@@ -350,20 +294,13 @@ public class LightLocalizer extends Thread  {
 	   * 
 	   * @param radius
 	   * @param distance
-	   * @return returns how many degrees each wheel must rotate to go a given distance
+	   * @return
 	   */
-	  public static int convertDistance(double radius, double distance) {
+	  private static int convertDistance(double radius, double distance) {
 		    return (int) ((180.0 * distance) / (Math.PI * radius));
 		  }
 
-	  /**
-	   * This method allwos the conversion of an angle to the total rotation of each wheel to turn that amount
-	   * @param radius of the wheels
-	   * @param width between the two wheels
-	   * @param angle the desired angle to turn
-	   * @return returns an int of degrees that is how much each wheel must rotate for the given angle
-	   */
-	  public static int convertAngle(double radius, double width, double angle) {
+	  private static int convertAngle(double radius, double width, double angle) {
 		    return convertDistance(radius, Math.PI * width * angle / 360.0);
 		  }
 }

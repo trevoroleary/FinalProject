@@ -144,13 +144,6 @@ public class Navigation extends Thread {
 			lightLocalizer.correctLocation();
 	}
 
-	
-	/**
-	 * This method is used to turn some amount rather than to a specific heading
-	 * @param theta this paramter is by how much the robot should turn
-	 * @param correct this boolean determines wether the robot will correct after or not
-	 * @author Trevor O
-	 */
 	public static void turn(double theta, boolean correct) {
 		leftMotor.setSpeed(MOTOR_ROTATE);
 		rightMotor.setSpeed(MOTOR_ROTATE);
@@ -167,8 +160,9 @@ public class Navigation extends Thread {
 	 * This method determines whether another thread has called travelTo and
 	 * turnTo methods or not
 	 * 
-	 * @return a boolean for if the bot is currently navigating
+	 * @return
 	 */
+
 	public boolean isNavigating() {
 		return isNavigating;
 	}

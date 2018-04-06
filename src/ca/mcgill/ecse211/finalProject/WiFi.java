@@ -88,13 +88,13 @@ public class WiFi {
        */
       Map data = conn.getData();
 
-      
+    
       int redTeamNumber = ((Long) data.get("RedTeam")).intValue();
       
 	  if(TEAM_NUMBER == redTeamNumber) {
 		 isRedTeam = true;
 		 startCorner = ((Long) data.get("RedCorner")).intValue();
-		 targetColor = ((Long) data.get("OG")).intValue();
+		 targetColor = ((Long) data.get("OR")).intValue();
 		 
 		 SearchHome_LL[0] = ((Long) data.get("SR_LL_x")).intValue();
 		 SearchHome_LL[1] = ((Long) data.get("SR_LL_y")).intValue();
@@ -107,7 +107,7 @@ public class WiFi {
 		 Search_UR[1] = ((Long) data.get("SG_UR_y")).intValue();
 	  } else {
 		 startCorner = ((Long) data.get("GreenCorner")).intValue();
-		 targetColor = ((Long) data.get("OR")).intValue();
+		 targetColor = ((Long) data.get("OG")).intValue();
 		 
 		 SearchHome_LL[0] = ((Long) data.get("SG_LL_x")).intValue();
 		 SearchHome_LL[1] = ((Long) data.get("SG_LL_y")).intValue();
@@ -141,7 +141,7 @@ public class WiFi {
 	  Tunnel_UR[1] = ((Long) data.get("TN_UR_y")).intValue();
 	  
     	/*
-    	int redTeamNumber = 17;
+    	int redTeamNumber = 1;
         
   	  if(TEAM_NUMBER == redTeamNumber) {
   		 isRedTeam = true;
@@ -191,8 +191,7 @@ public class WiFi {
   	  Tunnel_LL[1] = 2;
   	  Tunnel_UR[0] = 4;
   	  Tunnel_UR[1] = 4;
-  	  */
-  	  
+	  */
 	  LCD.clear();
 
     } catch (Exception e) {

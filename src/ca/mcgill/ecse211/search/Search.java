@@ -1,20 +1,13 @@
-/**
- * This object is responsible for all of the searching the robot does
- * The search algorithem essentially tracks around the perimeter of the search region looking for blocks to its right
- * If a block is seen by the US sensor the robot moves towards it and attempts to scan it with the light sensor infront of it
- * 
- * @author Trevor O & Ahmed H
- * @version 1.0
- * @since 2018-02-1
- */
 package ca.mcgill.ecse211.search;
 
+import ca.mcgill.ecse211.color.IDSensor;
 import ca.mcgill.ecse211.color.colorSensor;
 import ca.mcgill.ecse211.finalProject.*;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.pilot.Destinator;
 import ca.mcgill.ecse211.pilot.Navigation;
 import ca.mcgill.ecse211.pilot.USLocalizer;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
@@ -37,6 +30,7 @@ public class Search {
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 	int turnCounter = 0;
+	int turnMax = 3;
 
 	private float blockInFront = 50;
 	private boolean navigating = false;
@@ -66,7 +60,7 @@ public class Search {
 	 */
 	public void beginSearch() {
 
-		while (!foundSomething && turnCounter != 4) {
+		while (!foundSomething && turnCounter != turnMax) {
 			if (colorSensor.targetColor == colorSensor.sensorColor) {
 				foundSomething = true;
 				break;
@@ -84,7 +78,7 @@ public class Search {
 	 * 
 	 * @param radius
 	 * @param distance
-	 * @return the int of degrees required for each wheel to turn to cover the desired distance
+	 * @return
 	 */
 	public static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
@@ -97,28 +91,22 @@ public class Search {
 	 * @param radius
 	 * @param distance
 	 * @param angle
-	 * @return an int of the degrees required for each wheel to turn to turn the desired angle
+	 * @return
 	 */
 	public static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 
-	/**
-	 * This method is what is used once the ultrasonic sensor finds an object. 
-	 * This method goes close to the block and scans the block using the color sensor.
-	 * 
-	 * @author Trevor O & Ahmed H
-	 */
 	public void getBlock() {
-		navigator.turn(90, false);
+		navigator.turn(55, false);
 		sensorForward();
 
 		navigating = true;
-		Odometer.leftMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE), true);
-		Odometer.rightMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE), true);
+		Odometer.leftMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE-5), true);
+		Odometer.rightMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE-5), true);
 
 		while (navigating) {
-			if (USData.getFilteredData() < 4) {
+			if (USData.getFilteredData() < 5) {
 				Odometer.leftMotor.stop(true);
 				Odometer.rightMotor.stop(false);
 				navigating = false;
@@ -126,13 +114,19 @@ public class Search {
 			if (!Odometer.leftMotor.isMoving() && !Odometer.rightMotor.isMoving()) {
 				navigating = false;
 			}
-			if (colorSensor.seeColor()) {
+			if (colorSensor.correctColor) {
 				Odometer.leftMotor.stop(true);
 				Odometer.rightMotor.stop(false);
 				navigating = false;
-				LCD.drawString("Found" + colorSensor.getResponse(), 0, 6, false);
+				Sound.beep();
+				Sound.beep();
+				Sound.beep();
 				foundSomething = true;
-
+			} else if (colorSensor.seeColor()) {
+				Odometer.leftMotor.stop(true);
+				Odometer.rightMotor.stop(false);
+				navigating = false;
+				Sound.beep();
 			}
 		}
 
@@ -140,11 +134,6 @@ public class Search {
 
 	}
 
-	/**
-	 * When this method is called it ensures the sensor is facing towards the right
-	 * 
-	 * @author Ahmed H
-	 */
 	public void sensorRight() {
 		if (!isRight) {
 			isRight = true;
@@ -153,11 +142,6 @@ public class Search {
 
 	}
 
-	/**
-	 * When this method is called it ensures the sensor is facing forwards
-	 * 
-	 * @author Ahmed H
-	 */
 	public void sensorForward() {
 		if (isRight) {
 			isRight = false;
@@ -165,13 +149,6 @@ public class Search {
 		}
 	}
 
-	/**
-	 * This method is what tracks the robot tile by tile aorund the search region
-	 * each time its called it moves 1 tile length while scanning towards the right with the US sensor
-	 * If the robot is at the corner of the search region it will turn and continue onwards
-	 * 
-	 * @author Trevor O & Ahmed H
-	 */
 	public void goUp() {
 
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
@@ -181,7 +158,7 @@ public class Search {
 
 		double theta = odometer.nearestHeading();
 
-		if (turnCounter < 4) {
+		if (turnCounter < turnMax) {
 			if (y == UR[1] && theta == 0) {
 				navigator.turnTo(90, true);
 				turnCounter++;
@@ -198,10 +175,10 @@ public class Search {
 				// foundSomething = true;
 			}
 		}
-		if (turnCounter == 4) {
+		if (turnCounter == turnMax) {
 			foundSomething = true;
 		}
-		if (turnCounter != 4) {
+		if (turnCounter != turnMax) {
 			rightMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE), true);
 			leftMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE), true);
 
