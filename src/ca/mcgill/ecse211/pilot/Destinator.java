@@ -1,3 +1,13 @@
+/**
+ * This class is an object created by Main
+ * It posseses a simple finite state machine and high level movement methods
+ * 
+ * This class manages the checkpoints and tasks of the bot throughout execution
+ * 
+ * @author Trevor O & Ahmed H
+ * @version 1.0
+ * @since 2018-03-20
+ */
 package ca.mcgill.ecse211.pilot;
 
 import ca.mcgill.ecse211.finalProject.Main;
@@ -21,21 +31,23 @@ public class Destinator {
 		this.odometer = odometer;
 		this.wifi = wifi;
 	}
-
+/**
+ * this method is effectivly the finite state machine
+ * It references an integer that increments as the bot moves through the checkpoint 
+ * depending on the value of the integer this method can determine the current state of the robot and command its next task
+ * 
+ * @author Trevor O & Ahmed H
+ */
 	public void gotoCheckPoint() {
 		if (destState == 0) {
-			
 			if (wifi.isRedTeam) {
 				gotoBridge();
 			} else {
 				gotoTunnel();
 			}
-			
-
+			destState = 2;
 		} else if (destState == 1) {
-		
 			gotoSearch();
-		
 
 		} else if (destState == 2) {
 			if (wifi.isRedTeam) {
@@ -43,7 +55,7 @@ public class Destinator {
 			} else {
 				gotoBridge();
 			}
-			
+			destState = 3;
 		} else {
 			int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
 			int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
@@ -56,9 +68,16 @@ public class Destinator {
 				nav.turnTo(270, true);
 			}
 		}
-		destState++;
+		//destState++;
 	}
 
+	
+	/**
+	 * This method is used privatly by gotoCheckPoint
+	 * It considers the y location of the bot to determine where around the bridge it should navigate the robot to
+	 * 
+	 * @author Trevor O & Ahmed H
+	 */
 	public void gotoBridge() {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
@@ -82,6 +101,13 @@ public class Destinator {
 		goOverBridge();
 	}
 
+	/**
+	 * This method places the bot in the middle of two tiles at the start of the bridge
+	 * it squares up with the bridge to ensure its straight and then traveles 3 blocks forward with no correction
+	 * Finally it corrects once it crosses the bridge
+	 * 
+	 * @author Trevor O & Ahmed H
+	 */
 	public void goOverBridge() {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
@@ -110,6 +136,11 @@ public class Destinator {
 		}
 	}
 
+	/**
+	 * This method functions the same as go to Bridge but for the tunnel
+	 * 
+	 * @author Trevor O & Ahmed H
+	 */
 	public void gotoTunnel() {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
@@ -133,6 +164,12 @@ public class Destinator {
 		goThroughTunnel();
 	}
 
+	
+	/**
+	 * This methid is the same as goOverBridge but for the tunnel
+	 * 
+	 * @author Trevor O & Ahmed H
+	 */
 	@SuppressWarnings("static-access")
 	public void goThroughTunnel() {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
@@ -163,6 +200,11 @@ public class Destinator {
 		}
 	}
 
+	/**
+	 * This method navigates the robot to the closest corner of the search region and orients it so that its facing clockwise with respect to the search region
+	 * 
+	 * @author Trevor O & Ahmed H
+	 */
 	public void gotoSearch() {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
@@ -177,8 +219,13 @@ public class Destinator {
 			nav.turnTo(90, true);
 		}
 	}
-	
-	
+
+	/**
+	 * This method navigates the robot by single tile lengths in the x direction and corrects on each tile
+	 * 
+	 * @param destX is the desired x destination
+	 * @author Trevor O
+	 */
 	public void changeX(int destX) {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
@@ -207,6 +254,12 @@ public class Destinator {
 		}
 	}
 
+	/**
+	 * This method navigates the robot by single tile length in the y direction and corrects on each tile
+	 * 
+	 * @param destY is the desired y position
+	 * @author Trevor O
+	 */
 	public void changeY(int destY) {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
@@ -233,95 +286,5 @@ public class Destinator {
 				}
 			}
 		}
-	}
-
-	public void gotoLowerLeft(int[] LL, int[] UR) {
-		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
-		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		int dx = x - LL[0];
-		int dy = y - LL[1];
-
-		if (x < LL[0]) {
-			for (int i = 1; i < dy; i++) {
-				nav.travelTo(x, y - i, true);
-				if (i % 2 == 0)
-					nav.turnTo(90, true);
-			}
-			nav.travelTo(x, LL[1], true);
-			nav.travelTo(LL[0], LL[1], true);
-		}
-
-		else if (y < LL[1]) {
-			for (int i = 1; i < dy; i++) {
-				nav.travelTo(x - i, y, true);
-				if (i % 2 == 0)
-					nav.turnTo(90, true);
-			}
-			nav.travelTo(LL[0], y, true);
-			nav.travelTo(LL[0], LL[1], true);
-		}
-
-		else if (UR[0] != x) {
-			for (int i = 1; i < dy; i++) {
-				nav.travelTo(x, y - i, true);
-				if (i % 2 == 0)
-					nav.turnTo(90, true);
-			}
-			nav.travelTo(x, LL[1], true);
-			for (int i = 1; i < dx; i++) {
-				nav.travelTo(x - i, LL[1], true);
-				if (i % 2 == 0)
-					nav.turnTo(90, true);
-			}
-			nav.travelTo(LL[0], LL[1], true);
-		}
-
-		nav.turnTo(90, true);
-		nav.turnTo(0, true);
-	}
-
-	public void goToUpperRight(int[] UR) {
-		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
-		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		int dx = x - UR[0];
-		int dy = y - UR[1];
-
-		if (x < UR[0]) {
-			for (int i = 1; i < dy; i++) {
-				nav.travelTo(x, y - i, true);
-				if (i % 2 == 0)
-					nav.turnTo(90, true);
-			}
-			nav.travelTo(x, UR[1], true);
-			nav.travelTo(UR[0], UR[1], true);
-		}
-
-		else if (y < UR[1]) {
-			for (int i = 1; i < dy; i++) {
-				nav.travelTo(x - i, y, true);
-				if (i % 2 == 0)
-					nav.turnTo(90, true);
-			}
-			nav.travelTo(UR[0], y, true);
-			nav.travelTo(UR[0], UR[1], true);
-		}
-
-		else if (UR[0] != x) {
-			for (int i = 1; i < dy; i++) {
-				nav.travelTo(x, y - i, true);
-				if (i % 2 == 0)
-					nav.turnTo(90, true);
-			}
-			nav.travelTo(x, UR[1], true);
-			for (int i = 1; i < dx; i++) {
-				nav.travelTo(x - i, UR[1], true);
-				if (i % 2 == 0)
-					nav.turnTo(90, true);
-			}
-			nav.travelTo(UR[0], UR[1], true);
-		}
-
-		nav.turnTo(90, true);
-		nav.turnTo(0, true);
 	}
 }

@@ -1,3 +1,12 @@
+/**
+ * This object is responsible for all of the searching the robot does
+ * The search algorithem essentially tracks around the perimeter of the search region looking for blocks to its right
+ * If a block is seen by the US sensor the robot moves towards it and attempts to scan it with the light sensor infront of it
+ * 
+ * @author Trevor O & Ahmed H
+ * @version 1.0
+ * @since 2018-02-1
+ */
 package ca.mcgill.ecse211.search;
 
 import ca.mcgill.ecse211.color.colorSensor;
@@ -75,7 +84,7 @@ public class Search {
 	 * 
 	 * @param radius
 	 * @param distance
-	 * @return
+	 * @return the int of degrees required for each wheel to turn to cover the desired distance
 	 */
 	public static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
@@ -88,12 +97,18 @@ public class Search {
 	 * @param radius
 	 * @param distance
 	 * @param angle
-	 * @return
+	 * @return an int of the degrees required for each wheel to turn to turn the desired angle
 	 */
 	public static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 
+	/**
+	 * This method is what is used once the ultrasonic sensor finds an object. 
+	 * This method goes close to the block and scans the block using the color sensor.
+	 * 
+	 * @author Trevor O & Ahmed H
+	 */
 	public void getBlock() {
 		navigator.turn(90, false);
 		sensorForward();
@@ -125,6 +140,11 @@ public class Search {
 
 	}
 
+	/**
+	 * When this method is called it ensures the sensor is facing towards the right
+	 * 
+	 * @author Ahmed H
+	 */
 	public void sensorRight() {
 		if (!isRight) {
 			isRight = true;
@@ -133,6 +153,11 @@ public class Search {
 
 	}
 
+	/**
+	 * When this method is called it ensures the sensor is facing forwards
+	 * 
+	 * @author Ahmed H
+	 */
 	public void sensorForward() {
 		if (isRight) {
 			isRight = false;
@@ -140,6 +165,13 @@ public class Search {
 		}
 	}
 
+	/**
+	 * This method is what tracks the robot tile by tile aorund the search region
+	 * each time its called it moves 1 tile length while scanning towards the right with the US sensor
+	 * If the robot is at the corner of the search region it will turn and continue onwards
+	 * 
+	 * @author Trevor O & Ahmed H
+	 */
 	public void goUp() {
 
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);

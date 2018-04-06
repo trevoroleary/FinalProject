@@ -13,6 +13,7 @@ import java.util.TimerTask;
 
 import ca.mcgill.ecse211.color.*;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
@@ -32,8 +33,8 @@ public class Main {
 	// Motor Objects, and Robot related parameters
 	
 	
-	static final String SERVER_IP = "192.168.2.11";
-	static final int TEAM_NUMBER = 1;
+	static final String SERVER_IP = "192.168.2.3";
+	static final int TEAM_NUMBER = 17;
 	
 
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
@@ -76,13 +77,6 @@ public class Main {
 	public static final int MOTOR_STRAIGHT = 185; //185
 
 
-
-	/**
-	 * This is the main method
-	 * 
-	 * @throws OdometerExceptions
-	 */
-
 	public static void main(String[] args) throws OdometerExceptions {
 
 		
@@ -115,17 +109,27 @@ public class Main {
 
 		USLocalizer.localize();
 		lightLocalizer.localize();
-		navigator.turnTo(90, true);
+		//Sound.beep();
+		navigator.turnTo(0, true);
+		
+		/*
 		destinator.gotoCheckPoint();
 		destinator.gotoCheckPoint();
+		destinator.gotoCheckPoint();
+		
+		*/
+		
 		
 		//odometer.setXYT(3, 5, 270);
 		
 		
-		
+		/*
 		colorSensor colorSensor = new colorSensor(RGBData, RGBColor, wifi.targetColor);
 		colorSensor.start();
 		Search searcher = new Search(leftMotor, rightMotor, wifi.Search_LL, wifi.Search_UR, colorSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
+		
+		
+		
 		
 		//destinator.gotoCheckPoint();
 		
@@ -142,13 +146,8 @@ public class Main {
 		//searcher.beginSearch();
 
 
-		/*
-		 * navigator.travelTo(0, 6); lightLocalizer.correctLocation();
-		 * navigator.travelTo(6, 6); lightLocalizer.correctLocation();
-		 * navigator.travelTo(6, 0); lightLocalizer.correctLocation();
-		 * navigator.travelTo(0, 0); lightLocalizer.correctLocation();
-		 *
 		*/
+		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
 

@@ -1,3 +1,12 @@
+/**
+ * This class manages the color sensor positioned in front and above the robot
+ * When initialized it constantly checks to see if a color is seen under the light sensor
+ * It identifies the color comparing values gathered from the color sensor to a gausian distribution of test values
+ * 
+ * @author Tre M
+ * @version 2.0
+ * @since 2018-02-1
+ */
 package ca.mcgill.ecse211.color;
 
 import ca.mcgill.ecse211.finalProject.*;
@@ -55,12 +64,28 @@ public class colorSensor extends Thread {
 	
 	private static double sdMultiplier = 8.0; 
 
+	/**
+	 * This is the class constructor
+	 * @param RGBData a location for the class to store color sensor values
+	 * @param RGBColor the sample provider for the color sensor
+	 * @param targetColor and the target color the bot is looking for
+	 * 
+	 * @author Tre M
+	 */
 	public colorSensor(float[] RGBData, SampleProvider RGBColor, int targetColor ) {
 		this.RGBData=RGBData;
 		this.RGBColor=RGBColor;
 		this.targetColor = targetColor;
 	}
 
+	/**
+	 * This is the method that determines which color the light sensor is measuring using gausian distribution
+	 * @param Red These are the values measured by the color sensor
+	 * @param Green
+	 * @param Blue
+	 * @return an int identifying which color is measured
+	 * @author Tre M
+	 */
 	public static int colorEnumCalculator(float Red, float Green, float Blue) {
 
 		if ((redR - sdMultiplier * redRSD) < Red && Red < redR + sdMultiplier * redRSD && redG - sdMultiplier * redGSD < Green
@@ -80,6 +105,13 @@ public class colorSensor extends Thread {
 		}
 	}
 
+	/**
+	 * This method converts the color identified to a string to print on the screen
+	 * @param color the int that denotes what color the sensor is looking at
+	 * @param correctColor a boolean that shows whether this is the right color or not
+	 * @return the string identified
+	 * @author Tre M
+	 */
 	public static String colorToString(int color, boolean correctColor) {
 		if (correctColor && prevColor!=color) {
 			Sound.twoBeeps();
@@ -106,10 +138,20 @@ public class colorSensor extends Thread {
 		}
 	}
 	
+	/**
+	 * this method can be called to check if the color of the block identified is correct
+	 * @return a string of the color that is identified
+	 * @author Tre M
+	 */
 	public static String getResponse(){
 		return foundColor;
 	}
 	
+	/**
+	 * This method is used to check if the desired block has been found
+	 * @return a boolean denoting if the bot found the desired color
+	 * @author Tre M
+	 */
 	public static boolean seeColor(){
 		if (sensorColor!=0){
 			return true;
@@ -119,7 +161,6 @@ public class colorSensor extends Thread {
 		}
 	}
 	
-
 	public void run() {
 		long updateStart, updateEnd;
 		while(true) {

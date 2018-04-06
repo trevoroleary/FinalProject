@@ -88,7 +88,7 @@ public class WiFi {
        */
       Map data = conn.getData();
 
-    
+      
       int redTeamNumber = ((Long) data.get("RedTeam")).intValue();
       
 	  if(TEAM_NUMBER == redTeamNumber) {
@@ -141,7 +141,7 @@ public class WiFi {
 	  Tunnel_UR[1] = ((Long) data.get("TN_UR_y")).intValue();
 	  
     	/*
-    	int redTeamNumber = 1;
+    	int redTeamNumber = 17;
         
   	  if(TEAM_NUMBER == redTeamNumber) {
   		 isRedTeam = true;
@@ -191,7 +191,8 @@ public class WiFi {
   	  Tunnel_LL[1] = 2;
   	  Tunnel_UR[0] = 4;
   	  Tunnel_UR[1] = 4;
-	  */
+  	  */
+  	  
 	  LCD.clear();
 
     } catch (Exception e) {
