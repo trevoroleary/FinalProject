@@ -25,9 +25,9 @@ public class Destinator {
 
 	public void gotoCheckPoint() {
 		if (destState == 0) {
-			if (wifi.isRedTeam) {
+			if (wifi.isRedTeam) {//If Red Team
 				gotoBridge();
-			} else {
+			} else { //If you are the Green Player
 				gotoTunnel();
 			}
 		} else if (destState == 1) {
