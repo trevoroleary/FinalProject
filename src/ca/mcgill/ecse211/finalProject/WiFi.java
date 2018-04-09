@@ -59,6 +59,8 @@ public class WiFi {
   public int[] Search_LL = new int[2];
   public int[] Search_UR = new int[2];
   
+  
+  public boolean isFlipped = false;
 
   // Enable/disable printing of debug info from the WiFi class
   private static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
@@ -86,10 +88,38 @@ public class WiFi {
        * will receive a message saying an invalid team number was specified and getData() will throw
        * an exception letting you know.
        */
-      Map data = conn.getData();
+      
+    Map data = conn.getData();
 
     
       int redTeamNumber = ((Long) data.get("RedTeam")).intValue();
+           
+	  Red_LL[0] = ((Long) data.get("Red_LL_x")).intValue();
+	  Red_LL[1] = ((Long) data.get("Red_LL_y")).intValue();
+	  Red_UR[0] = ((Long) data.get("Red_UR_x")).intValue();
+	  Red_UR[1] = ((Long) data.get("Red_UR_y")).intValue();
+	  
+	  Green_LL[0] = ((Long) data.get("Green_LL_x")).intValue();
+	  Green_LL[1] = ((Long) data.get("Green_LL_y")).intValue();
+	  Green_UR[0] = ((Long) data.get("Green_UR_x")).intValue();
+	  Green_UR[1] = ((Long) data.get("Green_UR_y")).intValue();
+	  
+	  Bridge_LL[0] = ((Long) data.get("BR_LL_x")).intValue();
+	  Bridge_LL[1] = ((Long) data.get("BR_LL_y")).intValue();
+	  Bridge_UR[0] = ((Long) data.get("BR_UR_x")).intValue();
+	  Bridge_UR[1] = ((Long) data.get("BR_UR_y")).intValue();
+	  
+	  Tunnel_LL[0] = ((Long) data.get("TN_LL_x")).intValue();
+	  Tunnel_LL[1] = ((Long) data.get("TN_LL_y")).intValue();
+	  Tunnel_UR[0] = ((Long) data.get("TN_UR_x")).intValue();
+	  Tunnel_UR[1] = ((Long) data.get("TN_UR_y")).intValue();
+      
+      
+      
+      if((Tunnel_UR[0] - Tunnel_LL[0]) == 2) {
+    	  isFlipped = true;
+      }
+      
       
 	  if(TEAM_NUMBER == redTeamNumber) {
 		 isRedTeam = true;
@@ -120,28 +150,8 @@ public class WiFi {
 		 Search_UR[1] = ((Long) data.get("SR_UR_y")).intValue();
 	  }
 	  
-	  Red_LL[0] = ((Long) data.get("Red_LL_x")).intValue();
-	  Red_LL[1] = ((Long) data.get("Red_LL_y")).intValue();
-	  Red_UR[0] = ((Long) data.get("Red_UR_x")).intValue();
-	  Red_UR[1] = ((Long) data.get("Red_UR_y")).intValue();
-	  
-	  Green_LL[0] = ((Long) data.get("Green_LL_x")).intValue();
-	  Green_LL[1] = ((Long) data.get("Green_LL_y")).intValue();
-	  Green_UR[0] = ((Long) data.get("Green_UR_x")).intValue();
-	  Green_UR[1] = ((Long) data.get("Green_UR_y")).intValue();
-	  
-	  Bridge_LL[0] = ((Long) data.get("BR_LL_x")).intValue();
-	  Bridge_LL[1] = ((Long) data.get("BR_LL_y")).intValue();
-	  Bridge_UR[0] = ((Long) data.get("BR_UR_x")).intValue();
-	  Bridge_UR[1] = ((Long) data.get("BR_UR_y")).intValue();
-	  
-	  Tunnel_LL[0] = ((Long) data.get("TN_LL_x")).intValue();
-	  Tunnel_LL[1] = ((Long) data.get("TN_LL_y")).intValue();
-	  Tunnel_UR[0] = ((Long) data.get("TN_UR_x")).intValue();
-	  Tunnel_UR[1] = ((Long) data.get("TN_UR_y")).intValue();
-	  
     	/*
-    	int redTeamNumber = 1;
+    	int redTeamNumber = 17;
         
   	  if(TEAM_NUMBER == redTeamNumber) {
   		 isRedTeam = true;
@@ -192,7 +202,7 @@ public class WiFi {
   	  Tunnel_UR[0] = 4;
   	  Tunnel_UR[1] = 4;
 	  */
-	  LCD.clear();
+	  
 
     } catch (Exception e) {
       System.err.println("Error: " + e.getMessage());

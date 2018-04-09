@@ -83,7 +83,7 @@ public class USLocalizer {
 				odo.setTheta(90);
 			}
 	  }
-  }
+  } 
   
 	public int getFilteredData() {
 		usDistance.fetchSample(usData, 0);

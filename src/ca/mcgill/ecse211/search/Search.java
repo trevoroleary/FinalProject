@@ -1,6 +1,5 @@
 package ca.mcgill.ecse211.search;
 
-import ca.mcgill.ecse211.color.IDSensor;
 import ca.mcgill.ecse211.color.colorSensor;
 import ca.mcgill.ecse211.finalProject.*;
 import ca.mcgill.ecse211.odometer.Odometer;

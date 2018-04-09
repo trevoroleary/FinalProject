@@ -86,6 +86,7 @@ public class LightLocalizer extends Thread  {
 	public void localize() {
 		correctXY();
 		setXTOffset();
+		Sound.beep();
 	}
 	
 	public void setYOffset() {

@@ -23,6 +23,7 @@ public class Destinator {
 		this.wifi = wifi;
 	}
 
+	@SuppressWarnings("static-access")
 	public void gotoCheckPoint() {
 		if (destState == 0) {
 			if (wifi.isRedTeam) {//If Red Team
@@ -42,23 +43,30 @@ public class Destinator {
 			
 		} else {
 			int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-			int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 			
 			if (y > wifi.Bridge_UR[1]) {
-				nav.travelTo(1,Main.GRID_SIZE -1,false);
+				//nav.travelTo(1,Main.GRID_SIZE -1,false);
+				nav.turn(90,true);
+				nav.turn(-90,true);
+				changeX(1);
+				changeY(Main.GRID_SIZE - 1);
 				nav.turnTo(90, true);
 			} else {
-				nav.travelTo(Main.GRID_SIZE -1 ,1,false);
+				//nav.travelTo(Main.GRID_SIZE -1 ,1,false);
+				nav.turn(90,true);
+				nav.turn(-90,true);
+				changeX(Main.GRID_SIZE - 1);
+				changeY(1);
 				nav.turnTo(270, true);
 			}
 		}
 		destState++;
 	}
 
+	@SuppressWarnings("static-access")
 	public void gotoBridge() {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
-
+		
 		if (y > wifi.Bridge_UR[1]) {
 
 			// nav.travelTo(wifi.Bridge_UR[0] - 1, wifi.Bridge_UR[1] + 1);
@@ -78,9 +86,13 @@ public class Destinator {
 		goOverBridge();
 	}
 
+	@SuppressWarnings("static-access")
 	public void goOverBridge() {
+		
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
+		
+		nav.turn(90, true);
+		
 		if (y > wifi.Bridge_UR[1]) {
 			nav.travelTo(wifi.Bridge_LL[0] + 0.45, wifi.Bridge_UR[1] + 0.5, false);
 			nav.turnTo(180, false);
@@ -96,9 +108,7 @@ public class Destinator {
 			nav.turnTo(0, false);
 			LightLocalizer.squareUp(false);
 			odometer.setTheta(0);
-			
 			nav.travelTo(wifi.Bridge_LL[0] + 0.45, wifi.Bridge_LL[1] + 3, false);
-			LightLocalizer.squareUp(false);
 
 			nav.travelTo(wifi.Bridge_LL[0], wifi.Bridge_UR[1] + 1, false);
 			nav.turn(90, true);
@@ -106,9 +116,9 @@ public class Destinator {
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	public void gotoTunnel() {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 
 		if (y < wifi.Tunnel_UR[1]) {
 
@@ -132,13 +142,11 @@ public class Destinator {
 	@SuppressWarnings("static-access")
 	public void goThroughTunnel() {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 		if (y > wifi.Tunnel_UR[1]) {
 			nav.travelTo(wifi.Tunnel_LL[0] + 0.5, wifi.Tunnel_UR[1] + 0.5, false);
 			nav.turnTo(180, false);
 			LightLocalizer.squareUp(false);
 			odometer.setTheta(180);
-			
 			nav.travelTo(wifi.Tunnel_LL[0] + 0.5, wifi.Tunnel_UR[1] - 3, false);
 
 			nav.travelTo(wifi.Tunnel_LL[0] + 1, wifi.Tunnel_LL[1] - 1, false);
@@ -149,23 +157,20 @@ public class Destinator {
 			nav.turnTo(0, false);
 			LightLocalizer.squareUp(false);
 			odometer.setTheta(0);
-			
 			nav.travelTo(wifi.Tunnel_LL[0] + 0.5, wifi.Tunnel_LL[1] + 3, false);
-			
-
+		
 			nav.travelTo(wifi.Tunnel_LL[0], wifi.Tunnel_UR[1] + 1, false);
 			nav.turn(90, true);
-
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	public void gotoSearch() {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
-		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 
 		if (y > wifi.Tunnel_UR[1]) {
-			changeY(wifi.Search_LL[1]);
 			changeX(wifi.Search_UR[0]);
+			changeY(wifi.Search_LL[1]);
 			nav.turnTo(270, true);			
 		} else {
 			changeX(wifi.Search_LL[0]);
@@ -173,8 +178,7 @@ public class Destinator {
 			nav.turnTo(90, true);
 		}
 	}
-	
-	
+		
 	public void changeX(int destX) {
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
@@ -237,6 +241,7 @@ public class Destinator {
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	public void gotoLowerLeft(int[] LL, int[] UR) {
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
@@ -282,6 +287,7 @@ public class Destinator {
 		nav.turnTo(0, true);
 	}
 
+	@SuppressWarnings("static-access")
 	public void goToUpperRight(int[] UR) {
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 		int y = (int) ((odometer.getY() / Main.TILE_SIZE) + 0.5);
@@ -325,5 +331,161 @@ public class Destinator {
 
 		nav.turnTo(90, true);
 		nav.turnTo(0, true);
+	}
+	
+	
+	//----------------------------------****** SO MUCH BS BELOW *******----------------------------------------\\
+	
+	@SuppressWarnings("static-access")
+	public void BSgotoCheckPoint(){
+		if (destState == 0) {
+			if (wifi.isRedTeam) {//If Red Team
+				BSgotoBridge();
+			} else { //If you are the Green Player
+				BSgotoTunnel();
+			}
+		} else if (destState == 1) {
+			BSgotoSearch();
+			
+		} else if (destState == 2) {
+			if (wifi.isRedTeam) {
+				BSgotoTunnel();
+			} else {
+				BSgotoBridge();
+			}
+			
+		} else {
+			int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
+			if (x < wifi.Bridge_UR[0]) {
+				//nav.travelTo(1,Main.GRID_SIZE -1,false);
+				nav.turn(90,true);
+				nav.turn(-90,true);
+				changeX(1);
+				changeY(Main.GRID_SIZE - 1);
+				nav.turnTo(90, true);
+			} else {
+				//nav.travelTo(Main.GRID_SIZE -1 ,1,false);
+				nav.turn(90,true);
+				nav.turn(-90,true);
+				changeX(Main.GRID_SIZE - 1);
+				changeY(1);
+				nav.turnTo(270, true);
+			}
+		}
+		destState++;
+	}
+
+	@SuppressWarnings("static-access")
+	public void BSgotoBridge() {
+		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
+
+		if (x > wifi.Bridge_UR[0]) {
+
+			// nav.travelTo(wifi.Bridge_UR[0] - 1, wifi.Bridge_UR[1] + 1);
+
+			changeX(wifi.Bridge_LL[0] + 3);
+			changeY(wifi.Bridge_LL[1]);
+			nav.turnTo(180, true);
+		} else {
+
+			// nav.travelTo(wifi.Bridge_LL[0] + 1, wifi.Bridge_LL[1] - 1);
+
+			changeX(wifi.Bridge_UR[0] - 3);
+			changeY(wifi.Bridge_UR[1]);
+			nav.turnTo(0, true);
+		}
+
+		BSgoOverBridge();
+	}
+	
+	@SuppressWarnings("static-access")
+	public void BSgotoTunnel() {
+		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
+
+		if (x > wifi.Tunnel_UR[0]) {
+
+			// nav.travelTo(wifi.Bridge_UR[0] - 1, wifi.Bridge_UR[1] + 1);
+
+			changeX(wifi.Tunnel_LL[0] + 3);
+			changeY(wifi.Tunnel_LL[1]);
+			nav.turnTo(180, true);
+		} else {
+
+			// nav.travelTo(wifi.Bridge_LL[0] + 1, wifi.Bridge_LL[1] - 1);
+
+			changeX(wifi.Tunnel_UR[0] - 3);
+			changeY(wifi.Tunnel_UR[1]);
+			nav.turnTo(0, true);
+		}
+
+		BSgoThroughTunnel();
+	}
+
+	@SuppressWarnings("static-access")
+	public void BSgoOverBridge() {
+		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
+		nav.turn(90, true);
+		if (x > wifi.Bridge_UR[0]) {
+			nav.travelTo(wifi.Bridge_UR[0] + 0.5, wifi.Bridge_UR[1] - 0.55, false);
+			nav.turnTo(270, false);
+			LightLocalizer.squareUp(false);
+			odometer.setTheta(270);
+			nav.travelTo(wifi.Bridge_UR[0] - 3, wifi.Bridge_UR[1] - 0.55, false);
+
+			nav.travelTo(wifi.Bridge_LL[0] - 1, wifi.Bridge_LL[1] + 1, false);
+			nav.turn(90, true);
+		} else {
+
+			nav.travelTo(wifi.Bridge_LL[0] - 0.5, wifi.Bridge_LL[1] + 0.55, false);
+			nav.turnTo(90, false);
+			LightLocalizer.squareUp(false);
+			odometer.setTheta(90);
+			nav.travelTo(wifi.Bridge_LL[0] + 3, wifi.Bridge_LL[1] + 0.55, false);
+
+			nav.travelTo(wifi.Bridge_UR[0] + 1, wifi.Bridge_UR[1] - 1, false);
+			nav.turn(90, true);
+
+		}
+	}
+	
+	@SuppressWarnings("static-access")
+	public void BSgoThroughTunnel() {
+		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
+		
+		if (x > wifi.Tunnel_UR[0]) {
+			nav.travelTo(wifi.Tunnel_UR[0] + 0.5, wifi.Tunnel_UR[1] - 0.55, false);
+			nav.turnTo(270, false);
+			LightLocalizer.squareUp(false);
+			odometer.setTheta(270);
+			nav.travelTo(wifi.Tunnel_UR[0] - 3, wifi.Tunnel_UR[1] - 0.55, false);
+
+			nav.travelTo(wifi.Tunnel_LL[0] - 1, wifi.Tunnel_LL[1] + 1, false);
+			nav.turn(90, true);
+		} else {
+
+			nav.travelTo(wifi.Tunnel_LL[0] - 0.5, wifi.Tunnel_LL[1] + 0.55, false);
+			nav.turnTo(90, false);
+			LightLocalizer.squareUp(false);
+			odometer.setTheta(90);
+			nav.travelTo(wifi.Tunnel_LL[0] + 3, wifi.Tunnel_LL[1] + 0.55, false);
+
+			nav.travelTo(wifi.Tunnel_UR[0] + 1, wifi.Tunnel_UR[1] - 1, false);
+			nav.turn(90, true);
+		}
+	}
+	
+	@SuppressWarnings("static-access")
+	public void BSgotoSearch() {
+		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
+
+		if (x > wifi.Tunnel_UR[0]) {
+			changeY(wifi.Search_UR[1]);
+			changeX(wifi.Search_UR[0]);
+			nav.turnTo(180, true);			
+		} else {
+			changeY(wifi.Search_LL[1]);
+			changeX(wifi.Search_LL[0]);
+			nav.turnTo(0, true);
+		}
 	}
 }

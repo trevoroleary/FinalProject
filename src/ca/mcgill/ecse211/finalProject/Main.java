@@ -13,6 +13,7 @@ import java.util.TimerTask;
 
 import ca.mcgill.ecse211.color.*;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
@@ -32,8 +33,10 @@ public class Main {
 	// Motor Objects, and Robot related parameters
 	
 	
-	static final String SERVER_IP = "192.168.2.19";
+	static final String SERVER_IP = "192.168.2.24";
 	static final int TEAM_NUMBER = 17;
+	
+	static int counter = 0;
 	
 
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
@@ -96,31 +99,42 @@ public class Main {
 		 * --------------------------------PROGRAM BEGINS--------------------------------
 		 * 
 		 */
-
 		
+		
+		Sound.setVolume(100);
 		USLocalizer.localize();
 		lightLocalizer.localize();
-		
-		
 		navigator.turn(90, true);
 		
-		destinator.gotoCheckPoint();
-		destinator.gotoCheckPoint();
 		
-		
-		
-		//odometer.setXYT(wifi.Search_LL[0]*TILE_SIZE, wifi.Search_LL[1]*TILE_SIZE, 0);
-		
-		
-		colorSensor colorSensor = new colorSensor(RGBData, RGBColor, wifi.targetColor);
-		colorSensor.start();
-		Search searcher = new Search(leftMotor, rightMotor, wifi.Search_LL, wifi.Search_UR, colorSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
-		searcher.beginSearch();
-		//colorSensor.interrupt();
-		
-		destinator.gotoCheckPoint();
-		destinator.gotoCheckPoint();
-		
+		if(!wifi.isFlipped) { 	//If Everything is Normal... Proceed as Normal
+			destinator.gotoCheckPoint();
+			destinator.gotoCheckPoint();
+			
+			colorSensor colorSensor = new colorSensor(RGBData, RGBColor, wifi.targetColor);
+			colorSensor.start();
+			Search searcher = new Search(leftMotor, rightMotor, wifi.Search_LL, wifi.Search_UR, colorSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
+			searcher.beginSearch();
+			
+			//colorSensor.interrupt();
+			
+			destinator.gotoCheckPoint();
+			destinator.gotoCheckPoint();
+		} else {
+			destinator.BSgotoCheckPoint();
+			destinator.BSgotoCheckPoint();
+			
+			colorSensor colorSensor = new colorSensor(RGBData, RGBColor, wifi.targetColor);
+			colorSensor.start();
+			Search searcher = new Search(leftMotor, rightMotor, wifi.Search_LL, wifi.Search_UR, colorSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
+			searcher.beginSearch();
+			//destinator.goToUpperRight(wifi.Search_UR);
+			
+			//colorSensor.interrupt();
+			
+			destinator.BSgotoCheckPoint();
+			destinator.BSgotoCheckPoint();
+		}
 		
 //		IDSensor IDSensor = new IDSensor(RGBData, RGBColor, wifi.targetColor);
 //		IDSensor.start();
