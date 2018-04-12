@@ -60,7 +60,7 @@ public class WiFi {
   public int[] Search_UR = new int[2];
   
   
-  public boolean isFlipped = false;
+  public boolean isFlipped = true;
 
   // Enable/disable printing of debug info from the WiFi class
   private static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
@@ -116,15 +116,15 @@ public class WiFi {
       
       
       
-      if((Tunnel_UR[0] - Tunnel_LL[0]) == 2) {
-    	  isFlipped = true;
-      }
+//      if((Tunnel_UR[0] - Tunnel_LL[0]) == 2) {
+//    	  isFlipped = true;
+//      }
       
       
 	  if(TEAM_NUMBER == redTeamNumber) {
 		 isRedTeam = true;
 		 startCorner = ((Long) data.get("RedCorner")).intValue();
-		 targetColor = ((Long) data.get("OR")).intValue();
+		 targetColor = ((Long) data.get("OG")).intValue();
 		 
 		 SearchHome_LL[0] = ((Long) data.get("SR_LL_x")).intValue();
 		 SearchHome_LL[1] = ((Long) data.get("SR_LL_y")).intValue();
@@ -137,7 +137,7 @@ public class WiFi {
 		 Search_UR[1] = ((Long) data.get("SG_UR_y")).intValue();
 	  } else {
 		 startCorner = ((Long) data.get("GreenCorner")).intValue();
-		 targetColor = ((Long) data.get("OG")).intValue();
+		 targetColor = ((Long) data.get("OR")).intValue();
 		 
 		 SearchHome_LL[0] = ((Long) data.get("SG_LL_x")).intValue();
 		 SearchHome_LL[1] = ((Long) data.get("SG_LL_y")).intValue();

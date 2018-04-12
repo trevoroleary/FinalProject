@@ -33,7 +33,7 @@ public class Main {
 	// Motor Objects, and Robot related parameters
 	
 	
-	static final String SERVER_IP = "192.168.2.24";
+	static final String SERVER_IP = "192.168.2.3";
 	static final int TEAM_NUMBER = 17;
 	
 	static int counter = 0;
@@ -74,9 +74,9 @@ public class Main {
 	public static final double WHEEL_RAD = 2.12;// 2.12
 	public static final double TRACK = 10.45;//
 	public static final double TILE_SIZE = 30.48;
-	public static final int GRID_SIZE = 8;
-	public static final int MOTOR_ROTATE = 105;
-	public static final int MOTOR_STRAIGHT = 185; //185
+	public static final int GRID_SIZE = 12;
+	public static final int MOTOR_ROTATE = 135;
+	public static final int MOTOR_STRAIGHT = 250; //185
 
 
 	public static void main(String[] args) throws OdometerExceptions {
@@ -114,6 +114,7 @@ public class Main {
 			colorSensor colorSensor = new colorSensor(RGBData, RGBColor, wifi.targetColor);
 			colorSensor.start();
 			Search searcher = new Search(leftMotor, rightMotor, wifi.Search_LL, wifi.Search_UR, colorSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
+			
 			searcher.beginSearch();
 			
 			//colorSensor.interrupt();
@@ -127,7 +128,9 @@ public class Main {
 			colorSensor colorSensor = new colorSensor(RGBData, RGBColor, wifi.targetColor);
 			colorSensor.start();
 			Search searcher = new Search(leftMotor, rightMotor, wifi.Search_LL, wifi.Search_UR, colorSensor, odometer, USLocalizer, navigator,destinator , sensorMotor);
+			
 			searcher.beginSearch();
+			
 			//destinator.goToUpperRight(wifi.Search_UR);
 			
 			//colorSensor.interrupt();

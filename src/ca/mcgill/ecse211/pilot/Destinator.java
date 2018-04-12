@@ -33,7 +33,6 @@ public class Destinator {
 			}
 		} else if (destState == 1) {
 			gotoSearch();
-			
 		} else if (destState == 2) {
 			if (wifi.isRedTeam) {
 				gotoTunnel();
@@ -48,17 +47,32 @@ public class Destinator {
 				//nav.travelTo(1,Main.GRID_SIZE -1,false);
 				nav.turn(90,true);
 				nav.turn(-90,true);
-				changeX(1);
-				changeY(Main.GRID_SIZE - 1);
-				nav.turnTo(90, true);
+				
+				//changeY(Main.GRID_SIZE - 1);
+				//changeY(Main.GRID_SIZE - 1);
+				//nav.turnTo(90, true);
 			} else {
 				//nav.travelTo(Main.GRID_SIZE -1 ,1,false);
 				nav.turn(90,true);
 				nav.turn(-90,true);
-				changeX(Main.GRID_SIZE - 1);
-				changeY(1);
-				nav.turnTo(270, true);
+				//changeY(1);
+				//nav.turnTo(270, true);
 			}
+			
+			if(wifi.startCorner == 3) {		
+				changeX(1);
+				nav.travelTo(1, Main.GRID_SIZE - 1, true);
+			} else if(wifi.startCorner == 0) {
+				changeX(1);
+				nav.travelTo(1, 1, true);
+			} else if(wifi.startCorner == 1) {
+				changeX(Main.GRID_SIZE - 1);
+				nav.travelTo(Main.GRID_SIZE - 1, 1, true);
+			} else {
+				changeX(Main.GRID_SIZE - 1);
+				nav.travelTo(Main.GRID_SIZE - 1 , Main.GRID_SIZE -1 , true);
+			}
+			
 		}
 		destState++;
 	}
@@ -98,7 +112,7 @@ public class Destinator {
 			nav.turnTo(180, false);
 			LightLocalizer.squareUp(false);
 			odometer.setTheta(180);
-			nav.travelTo(wifi.Bridge_LL[0] + 0.45, wifi.Bridge_UR[1] - 3, false);
+			nav.travelTo(wifi.Bridge_LL[0] + 0.45, wifi.Bridge_UR[1] - 3.2, false);
 
 			nav.travelTo(wifi.Bridge_LL[0] + 1, wifi.Bridge_LL[1] - 1, false);
 			nav.turn(90, true);
@@ -108,7 +122,7 @@ public class Destinator {
 			nav.turnTo(0, false);
 			LightLocalizer.squareUp(false);
 			odometer.setTheta(0);
-			nav.travelTo(wifi.Bridge_LL[0] + 0.45, wifi.Bridge_LL[1] + 3, false);
+			nav.travelTo(wifi.Bridge_LL[0] + 0.45, wifi.Bridge_LL[1] + 3.2, false);
 
 			nav.travelTo(wifi.Bridge_LL[0], wifi.Bridge_UR[1] + 1, false);
 			nav.turn(90, true);
@@ -147,7 +161,7 @@ public class Destinator {
 			nav.turnTo(180, false);
 			LightLocalizer.squareUp(false);
 			odometer.setTheta(180);
-			nav.travelTo(wifi.Tunnel_LL[0] + 0.5, wifi.Tunnel_UR[1] - 3, false);
+			nav.travelTo(wifi.Tunnel_LL[0] + 0.5, wifi.Tunnel_UR[1] - 3.2, false);
 
 			nav.travelTo(wifi.Tunnel_LL[0] + 1, wifi.Tunnel_LL[1] - 1, false);
 			nav.turn(90, true);
@@ -157,7 +171,7 @@ public class Destinator {
 			nav.turnTo(0, false);
 			LightLocalizer.squareUp(false);
 			odometer.setTheta(0);
-			nav.travelTo(wifi.Tunnel_LL[0] + 0.5, wifi.Tunnel_LL[1] + 3, false);
+			nav.travelTo(wifi.Tunnel_LL[0] + 0.5, wifi.Tunnel_LL[1] + 3.2, false);
 		
 			nav.travelTo(wifi.Tunnel_LL[0], wifi.Tunnel_UR[1] + 1, false);
 			nav.turn(90, true);
@@ -189,9 +203,9 @@ public class Destinator {
 				if(j%2 == 1) {
 					nav.travelTo(destX - i, y, false);
 				}
-				if (j%2 == 0) {
+				if (j%2  == 0) {
 					nav.travelTo(destX - i, y, true);
-					//nav.turn(90, true);
+					nav.turn(90, true);
 				}
 				j++;
 			}
@@ -202,7 +216,7 @@ public class Destinator {
 				}
 				if (i % 2 == 0) {
 					nav.travelTo(destX + i, y, true);
-					//nav.turn(90, true);
+					nav.turn(90, true);
 				}
 				j++;
 			}
@@ -222,7 +236,7 @@ public class Destinator {
 				}
 				if (i % 2 == 0) {
 					nav.travelTo(x, destY - i, true);
-					//nav.turn(90, true);
+					nav.turn(90, true);
 				}
 				j++;
 			}
@@ -233,7 +247,7 @@ public class Destinator {
 				}
 				if (j%2 == 0) {
 					nav.travelTo(x, destY + i, true);
-					//nav.turn(90, true);
+					nav.turn(90, true);
 				}
 				j++;
 			}
@@ -346,7 +360,6 @@ public class Destinator {
 			}
 		} else if (destState == 1) {
 			BSgotoSearch();
-			
 		} else if (destState == 2) {
 			if (wifi.isRedTeam) {
 				BSgotoTunnel();
@@ -356,20 +369,33 @@ public class Destinator {
 			
 		} else {
 			int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
+			
 			if (x < wifi.Bridge_UR[0]) {
 				//nav.travelTo(1,Main.GRID_SIZE -1,false);
 				nav.turn(90,true);
 				nav.turn(-90,true);
-				changeX(1);
-				changeY(Main.GRID_SIZE - 1);
-				nav.turnTo(90, true);
+				//changeX(1);
+				//nav.turnTo(90, true);
 			} else {
 				//nav.travelTo(Main.GRID_SIZE -1 ,1,false);
 				nav.turn(90,true);
 				nav.turn(-90,true);
-				changeX(Main.GRID_SIZE - 1);
+				//changeX(Main.GRID_SIZE - 1);
+				//nav.turnTo(270, true);
+			}
+			
+			if(wifi.startCorner == 3) {		
+				changeY(Main.GRID_SIZE - 1);
+				nav.travelTo(1, Main.GRID_SIZE - 1, true);
+			} else if(wifi.startCorner == 0) {
 				changeY(1);
-				nav.turnTo(270, true);
+				nav.travelTo(1, 1, true);
+			} else if(wifi.startCorner == 1) {
+				changeY(1);
+				nav.travelTo(Main.GRID_SIZE - 1, 1, true);
+			} else {
+				changeY(Main.GRID_SIZE - 1);
+				nav.travelTo(Main.GRID_SIZE - 1 , Main.GRID_SIZE -1 , true);
 			}
 		}
 		destState++;
@@ -379,7 +405,7 @@ public class Destinator {
 	public void BSgotoBridge() {
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 
-		if (x > wifi.Bridge_UR[0]) {
+		if (x > wifi.Bridge_UR[0]) { //On the right side
 
 			// nav.travelTo(wifi.Bridge_UR[0] - 1, wifi.Bridge_UR[1] + 1);
 
@@ -402,19 +428,30 @@ public class Destinator {
 	public void BSgotoTunnel() {
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 
-		if (x > wifi.Tunnel_UR[0]) {
-
+		if (x > wifi.Tunnel_UR[0]) { //---------------------------------------on the right side--------------------------//
 			// nav.travelTo(wifi.Bridge_UR[0] - 1, wifi.Bridge_UR[1] + 1);
-
+			
 			changeX(wifi.Tunnel_LL[0] + 3);
-			changeY(wifi.Tunnel_LL[1]);
+			
+			if(wifi.Tunnel_LL[1] == 0) {// Tunnel is against the bottom
+				changeY(wifi.Tunnel_LL[1] + 1);
+				
+			} else { //Tunnel is against the top
+				changeY(wifi.Tunnel_LL[1]);
+			}
+			
 			nav.turnTo(180, true);
-		} else {
+		} else { //------------------------------------------on the left side-----------------------------------//
 
 			// nav.travelTo(wifi.Bridge_LL[0] + 1, wifi.Bridge_LL[1] - 1);
 
 			changeX(wifi.Tunnel_UR[0] - 3);
-			changeY(wifi.Tunnel_UR[1]);
+			
+			if(wifi.Tunnel_LL[1] == 0) { //Tunnel is on bottom	
+				changeY(wifi.Tunnel_UR[1]);
+			} else { //Tunnel is one top or anywhere else
+				changeY(wifi.Tunnel_LL[1]);
+			}
 			nav.turnTo(0, true);
 		}
 
@@ -430,7 +467,7 @@ public class Destinator {
 			nav.turnTo(270, false);
 			LightLocalizer.squareUp(false);
 			odometer.setTheta(270);
-			nav.travelTo(wifi.Bridge_UR[0] - 3, wifi.Bridge_UR[1] - 0.55, false);
+			nav.travelTo(wifi.Bridge_UR[0] - 3.2, wifi.Bridge_UR[1] - 0.55, false);
 
 			nav.travelTo(wifi.Bridge_LL[0] - 1, wifi.Bridge_LL[1] + 1, false);
 			nav.turn(90, true);
@@ -440,7 +477,7 @@ public class Destinator {
 			nav.turnTo(90, false);
 			LightLocalizer.squareUp(false);
 			odometer.setTheta(90);
-			nav.travelTo(wifi.Bridge_LL[0] + 3, wifi.Bridge_LL[1] + 0.55, false);
+			nav.travelTo(wifi.Bridge_LL[0] + 3.2, wifi.Bridge_LL[1] + 0.55, false);
 
 			nav.travelTo(wifi.Bridge_UR[0] + 1, wifi.Bridge_UR[1] - 1, false);
 			nav.turn(90, true);
@@ -452,25 +489,49 @@ public class Destinator {
 	public void BSgoThroughTunnel() {
 		int x = (int) ((odometer.getX() / Main.TILE_SIZE) + 0.5);
 		
-		if (x > wifi.Tunnel_UR[0]) {
-			nav.travelTo(wifi.Tunnel_UR[0] + 0.5, wifi.Tunnel_UR[1] - 0.55, false);
-			nav.turnTo(270, false);
-			LightLocalizer.squareUp(false);
-			odometer.setTheta(270);
-			nav.travelTo(wifi.Tunnel_UR[0] - 3, wifi.Tunnel_UR[1] - 0.55, false);
-
-			nav.travelTo(wifi.Tunnel_LL[0] - 1, wifi.Tunnel_LL[1] + 1, false);
-			nav.turn(90, true);
-		} else {
-
-			nav.travelTo(wifi.Tunnel_LL[0] - 0.5, wifi.Tunnel_LL[1] + 0.55, false);
-			nav.turnTo(90, false);
-			LightLocalizer.squareUp(false);
-			odometer.setTheta(90);
-			nav.travelTo(wifi.Tunnel_LL[0] + 3, wifi.Tunnel_LL[1] + 0.55, false);
-
-			nav.travelTo(wifi.Tunnel_UR[0] + 1, wifi.Tunnel_UR[1] - 1, false);
-			nav.turn(90, true);
+		if (x > wifi.Tunnel_UR[0]) {//------------------------------------------------------on the right side of the board-------------------------
+			
+			if(wifi.Tunnel_LL[1] == 0) {//---------------Tunnel is against bottom
+				nav.travelTo(wifi.Tunnel_UR[0] + 0.5, wifi.Tunnel_UR[1] - 0.55, false);
+				nav.turnTo(270, false);
+				LightLocalizer.squareUp(false);
+				odometer.setTheta(270);
+				nav.travelTo(wifi.Tunnel_UR[0] - 3.2, wifi.Tunnel_UR[1] - 0.55, false);
+	
+				nav.travelTo(wifi.Tunnel_LL[0] - 1, wifi.Tunnel_LL[1] + 1, false);
+				nav.turn(90, true);
+			} else { //---------------------------------- tunnel is against top
+				nav.travelTo(wifi.Tunnel_UR[0] + 0.5, wifi.Tunnel_UR[1] - 0.55, false);
+				nav.turnTo(270, false);
+				LightLocalizer.squareUp(false);
+				odometer.setTheta(270);
+				nav.travelTo(wifi.Tunnel_UR[0] - 3.2, wifi.Tunnel_UR[1] - 0.55, false);
+	
+				nav.travelTo(wifi.Tunnel_LL[0] - 1, wifi.Tunnel_LL[1], false);
+				nav.turn(90, true);
+			}
+			
+		} else { //-------------------------------------------On the left side of the board-----------------------------
+			
+			if(wifi.Tunnel_LL[1] == 0) { //-----------------If the tunnel is against the wall on the bottom
+				nav.travelTo(wifi.Tunnel_LL[0] - 0.5, wifi.Tunnel_LL[1] + 0.55, false);
+				nav.turnTo(90, false);
+				LightLocalizer.squareUp(false);
+				odometer.setTheta(90);
+				nav.travelTo(wifi.Tunnel_LL[0] + 3.2, wifi.Tunnel_LL[1] + 0.55, false);
+	
+				nav.travelTo(wifi.Tunnel_UR[0] + 1, wifi.Tunnel_UR[1], false);
+				nav.turn(90, true);
+			} else { //-----------------------------------if the tunnel is against the top 
+				nav.travelTo(wifi.Tunnel_LL[0] - 0.5, wifi.Tunnel_LL[1] + 0.55, false);
+				nav.turnTo(90, false);
+				LightLocalizer.squareUp(false);
+				odometer.setTheta(90);
+				nav.travelTo(wifi.Tunnel_LL[0] + 3.2, wifi.Tunnel_LL[1] + 0.55, false);
+	
+				nav.travelTo(wifi.Tunnel_UR[0] + 1, wifi.Tunnel_UR[1] - 1, false);
+				nav.turn(90, true);
+			}
 		}
 	}
 	
@@ -480,12 +541,12 @@ public class Destinator {
 
 		if (x > wifi.Tunnel_UR[0]) {
 			changeY(wifi.Search_UR[1]);
-			changeX(wifi.Search_UR[0]);
-			nav.turnTo(180, true);			
+			changeX(wifi.Search_LL[0]);
+			nav.turnTo(90, true);			
 		} else {
 			changeY(wifi.Search_LL[1]);
-			changeX(wifi.Search_LL[0]);
-			nav.turnTo(0, true);
+			changeX(wifi.Search_UR[0]);
+			nav.turnTo(270, true);
 		}
 	}
 }

@@ -176,6 +176,10 @@ public class Search {
 		}
 		if (turnCounter == turnMax) {
 			foundSomething = true;
+			Sound.twoBeeps();
+			Sound.twoBeeps();
+			Sound.twoBeeps();
+			
 		}
 		if (turnCounter != turnMax) {
 			rightMotor.rotate(convertDistance(Main.WHEEL_RAD, Main.TILE_SIZE), true);
